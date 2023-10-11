@@ -3,22 +3,18 @@ import requests
 import pickle
 import os.path
 import re
-import cost_parser
+from models.cost import Cost
+from utils import cost_parser
 from loguru import logger
-from dataclasses import dataclass
+
+from models.city_cost import CityCostData
 
 CURRENCY_REGEX = re.compile(r"(?:[\d,]+)(?:\.\d+)?")
 
 
-@dataclass
-class CityCostData:
-    currency: str | None
-    costs: list[cost_parser.Cost]
-
-
-def load_city_costs(city: str) -> CityCostData:
+def get_city_costs(city: str) -> CityCostData:
     city = city.lower()
-    pickle_file = f"data/cities/{city}.pickle"
+    pickle_file = f"data/cities/{city}.pkl"
     url = f"https://www.expatistan.com/cost-of-living/{city}"
 
     city_cost = CityCostData(None, [])
@@ -55,7 +51,7 @@ def load_city_costs(city: str) -> CityCostData:
                     r"\w+", price_string)[0].upper()
             price = re.findall(CURRENCY_REGEX, price_string)[
                 0].replace(",", "")
-            city_cost.costs.append(cost_parser.Cost(expense, float(price)))
+            city_cost.costs.append(Cost(expense, float(price)))
 
         with open(pickle_file, "wb") as f:
             pickle.dump(city_cost, f)
