@@ -4,7 +4,7 @@ import pickle
 import os.path
 import re
 from models.cost import Cost
-from utils import cost_parser
+from utils import cost_comparator
 from loguru import logger
 
 from models.city_cost import CityCostData
@@ -40,11 +40,11 @@ def get_city_costs(city: str) -> CityCostData:
 
         assert (len(city_expenses_rows) == len(city_prices_rows))
         combinacions = zip(city_expenses_rows, city_prices_rows)
-        assert (len(city_expenses_rows) == len(cost_parser.COST_TAGS))
+        assert (len(city_expenses_rows) == len(cost_comparator.COST_TAGS))
 
         city_cost.costs = []
 
-        for expense, (_, price) in zip(cost_parser.COST_TAGS, combinacions):
+        for expense, (_, price) in zip(cost_comparator.COST_TAGS, combinacions):
             price_string = price.text.strip()
             if city_cost.currency is None:
                 city_cost.currency = re.findall(
