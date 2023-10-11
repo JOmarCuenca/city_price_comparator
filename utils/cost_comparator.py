@@ -1,4 +1,5 @@
 import statistics
+from loguru import logger
 from models.city_cost import CityCostData, CostComparison
 
 COST_TAGS = [
@@ -57,10 +58,13 @@ COST_TAGS = [
 ]
 
 
+@logger.catch(reraise=True)
 def compare_cost(city_cost_1: CityCostData, city_cost_2: CityCostData) -> list[CostComparison]:
     amount_rate = input(
         f"Enter how much 1 {city_cost_1.currency} is in {city_cost_2.currency}: ")
     amount_rate = float(amount_rate)
+
+    logger.info("Setting amount rate to {}", amount_rate)
 
     assert len(city_cost_1.costs) == len(
         city_cost_2.costs), "The number of costs must be the same"
@@ -101,7 +105,11 @@ def generate_cost_comparison_strings(compared_costs: list[CostComparison]) -> li
 
     EMPTY_CHAR = ""
     country_avg_differential_percentage = f"{statistics.mean([cost.comparison for cost in compared_costs]):.5f}%"
-    strings.append(f"{EMPTY_CHAR:<{name_pad}} | {EMPTY_CHAR:<{base_pad}} | {EMPTY_CHAR:<{compared_pad}} | {country_avg_differential_percentage:<{percentage_pad}}")
+    strings.append(
+        f"{EMPTY_CHAR:<{name_pad}} | {EMPTY_CHAR:<{base_pad}} | {EMPTY_CHAR:<{compared_pad}} | {country_avg_differential_percentage:<{percentage_pad}}")
+
+    return strings
+
 
 def print_cost_comparison(compared_costs: list[CostComparison]):
     print('\n'.join(generate_cost_comparison_strings(compared_costs)))

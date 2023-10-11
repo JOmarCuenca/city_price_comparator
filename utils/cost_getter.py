@@ -11,7 +11,7 @@ from models.city_cost import CityCostData
 
 CURRENCY_REGEX = re.compile(r"(?:[\d,]+)(?:\.\d+)?")
 
-
+@logger.catch(reraise=True)
 def get_city_costs(city: str) -> CityCostData:
     city = city.lower()
     pickle_file = f"data/cities/{city}.pkl"
