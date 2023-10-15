@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 from models.cost import Cost
+from datetime import datetime
 
 
 @dataclass
 class CityCostData:
     currency: str | None
     costs: list[Cost]
+    creation_date: datetime = datetime.now()
 
 
 @dataclass
