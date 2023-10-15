@@ -1,27 +1,24 @@
 from dataclasses import dataclass
 from models.cost import Cost
+from datetime import datetime
 
 
 @dataclass
 class CityCostData:
     currency: str | None
     costs: list[Cost]
+    creation_date: datetime = datetime.now()
 
 
 @dataclass
 class CostComparison:
     cost_name: str
-    currency_rate: float
     base_cost: Cost
     comparison_cost: Cost
 
     @property
-    def localized_compared_cost(self) -> float:
-        return self.comparison_cost.cost * self.currency_rate
-
-    @property
     def comparison(self) -> float:
-        return (1 - self.localized_compared_cost / self.base_cost.cost) * 100
+        return (1 - self.comparison_cost.cost / self.base_cost.cost) * 100
 
     @property
     def percentage_comparison(self) -> str:

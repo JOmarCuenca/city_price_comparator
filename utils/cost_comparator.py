@@ -60,11 +60,9 @@ COST_TAGS = [
 
 @logger.catch(reraise=True)
 def compare_cost(city_cost_1: CityCostData, city_cost_2: CityCostData) -> list[CostComparison]:
-    amount_rate = input(
-        f"Enter how much 1 {city_cost_1.currency} is in {city_cost_2.currency}: ")
-    amount_rate = float(amount_rate)
+    assert city_cost_1.currency == city_cost_2.currency, "The currency must be the same"
 
-    logger.info("Setting amount rate to {}", amount_rate)
+    logger.info(f"Comparing costs using {city_cost_1.currency} as currency")
 
     assert len(city_cost_1.costs) == len(
         city_cost_2.costs), "The number of costs must be the same"
@@ -73,7 +71,7 @@ def compare_cost(city_cost_1: CityCostData, city_cost_2: CityCostData) -> list[C
 
     for name, (cost1, cost2) in zip(COST_TAGS, zip(city_cost_1.costs, city_cost_2.costs)):
         result.append(
-            CostComparison(name, amount_rate, cost1, cost2)
+            CostComparison(name, cost1, cost2)
         )
 
     return result
@@ -88,7 +86,7 @@ def generate_cost_comparison_strings(compared_costs: list[CostComparison]) -> li
     for cost in compared_costs:
         cost_names.append(cost.cost_name)
         base_amounts.append(f"$ {cost.base_cost.cost:.2f}")
-        compared_amounts.append(f"$ {cost.localized_compared_cost:.2f}")
+        compared_amounts.append(f"$ {cost.comparison_cost.cost:.2f}")
         percentage_differences.append(cost.percentage_comparison)
 
     name_pad = max([len(name) for name in cost_names])
