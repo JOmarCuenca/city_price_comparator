@@ -39,7 +39,7 @@ def get_city_cost_from_file(filepath: str) -> CityCostData | None:
 
 
 def get_city_costs_from_web(city: str) -> CityCostData:
-    url = format_url(city, None)
+    url = format_url(city, ENV_VALUES.currency)
     logger.debug(f"Getting costs from {url}")
 
     html_doc = requests.get(url).text
@@ -51,20 +51,20 @@ def get_city_costs_from_web(city: str) -> CityCostData:
     city_expenses_rows = city_expenses.find_all("a", class_="downlighted")
     city_prices_rows = city_expenses.find_all("td", class_="price city-1")
 
-    # print(f"costos {len(city_expenses_rows)}")
-    # print(f"precios {len(city_prices_rows)}")
+    assert (len(city_expenses_rows) == len(cost_comparator.COST_TAGS))
+
+    if len(city_prices_rows) != len(cost_comparator.COST_TAGS):
+        city_prices_rows = city_prices_rows[1::2]
 
     assert (len(city_expenses_rows) == len(city_prices_rows))
+
     combinacions = zip(city_expenses_rows, city_prices_rows)
     assert (len(city_expenses_rows) == len(cost_comparator.COST_TAGS))
 
-    city_cost = CityCostData(None, [])
+    city_cost = CityCostData(ENV_VALUES.currency, [])
 
     for expense, (_, price) in zip(cost_comparator.COST_TAGS, combinacions):
         price_string = price.text.strip()
-        if city_cost.currency is None:
-            city_cost.currency = re.findall(
-                r"\w+", price_string)[0].upper()
         price = re.findall(CURRENCY_REGEX, price_string)[
             0].replace(",", "")
         city_cost.costs.append(Cost(expense, float(price)))
@@ -80,7 +80,7 @@ def get_city_costs(city: str) -> CityCostData:
 
     if city_cost is not None:
         return city_cost
-    
+
     city_cost = get_city_costs_from_web(city)
 
     with open(pickle_file, "wb") as f:
