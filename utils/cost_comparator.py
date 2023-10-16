@@ -1,4 +1,3 @@
-import statistics
 from loguru import logger
 from models.city_cost import CityCostData, CostComparison
 
@@ -75,39 +74,3 @@ def compare_cost(city_cost_1: CityCostData, city_cost_2: CityCostData) -> list[C
         )
 
     return result
-
-
-def generate_cost_comparison_strings(compared_costs: list[CostComparison]) -> list[str]:
-    cost_names = ["Cost Name"]
-    base_amounts = ["Base Amount"]
-    compared_amounts = ["Compared Amount"]
-    percentage_differences = ["Percentage Difference"]
-
-    for cost in compared_costs:
-        cost_names.append(cost.cost_name)
-        base_amounts.append(f"$ {cost.base_cost.cost:.2f}")
-        compared_amounts.append(f"$ {cost.comparison_cost.cost:.2f}")
-        percentage_differences.append(cost.percentage_comparison)
-
-    name_pad = max([len(name) for name in cost_names])
-    base_pad = max([len(amount) for amount in base_amounts])
-    compared_pad = max([len(amount) for amount in compared_amounts])
-    percentage_pad = max([len(amount) for amount in percentage_differences])
-
-    strings = []
-
-    for name, base, compared, percentage in zip(cost_names, base_amounts, compared_amounts, percentage_differences):
-        row_string = f"{name:<{name_pad}} | {base:<{base_pad}} | {compared:<{compared_pad}} | {percentage:<{percentage_pad}}"
-        strings.append(row_string)
-        strings.append("-" * len(row_string))
-
-    EMPTY_CHAR = ""
-    country_avg_differential_percentage = f"{statistics.mean([cost.comparison for cost in compared_costs]):.5f}%"
-    strings.append(
-        f"{EMPTY_CHAR:<{name_pad}} | {EMPTY_CHAR:<{base_pad}} | {EMPTY_CHAR:<{compared_pad}} | {country_avg_differential_percentage:<{percentage_pad}}")
-
-    return strings
-
-
-def print_cost_comparison(compared_costs: list[CostComparison]):
-    print('\n'.join(generate_cost_comparison_strings(compared_costs)))

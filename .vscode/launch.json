@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Main program (test)",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "mexico-city",
+                "new-york-city",
+                "boston",
+                "cartagena",
+            ]
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
