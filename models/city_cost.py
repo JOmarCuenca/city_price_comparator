@@ -3,7 +3,7 @@ from models.cost import Cost
 from datetime import datetime
 
 
-@dataclass
+@dataclass(frozen=True, eq=True)
 class CityCostData:
     name: str
     currency: str | None
@@ -11,7 +11,7 @@ class CityCostData:
     creation_date: datetime = datetime.now()
 
 
-@dataclass
+@dataclass(frozen=True, eq=True)
 class CostComparison:
     cost_name: str
     base_cost: Cost
