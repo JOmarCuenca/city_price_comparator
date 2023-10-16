@@ -62,7 +62,7 @@ COST_TAGS = [
 def compare_cost(city_cost_1: CityCostData, city_cost_2: CityCostData) -> list[CostComparison]:
     assert city_cost_1.currency == city_cost_2.currency, "The currency must be the same"
 
-    logger.info(f"Comparing costs using {city_cost_1.currency} as currency")
+    logger.debug(f"Comparing costs using {city_cost_1.currency} as currency")
 
     assert len(city_cost_1.costs) == len(
         city_cost_2.costs), "The number of costs must be the same"
