@@ -5,6 +5,7 @@ from datetime import datetime
 
 @dataclass
 class CityCostData:
+    name: str
     currency: str | None
     costs: list[Cost]
     creation_date: datetime = datetime.now()

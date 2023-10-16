@@ -61,7 +61,7 @@ def get_city_costs_from_web(city: str) -> CityCostData:
     combinacions = zip(city_expenses_rows, city_prices_rows)
     assert (len(city_expenses_rows) == len(cost_comparator.COST_TAGS))
 
-    city_cost = CityCostData(ENV_VALUES.currency, [])
+    city_cost = CityCostData(city, ENV_VALUES.currency, [])
 
     for expense, (_, price) in zip(cost_comparator.COST_TAGS, combinacions):
         price_string = price.text.strip()
